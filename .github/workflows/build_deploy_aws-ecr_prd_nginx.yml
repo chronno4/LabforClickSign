@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: 'app/front-end/nginx-app/'
+      commitmsg: ${{ github.event.head_commit.message }}
 
     defaults:
       run:
@@ -27,6 +28,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: get commit message
+        run: |
+            echo Commit MSG = ${{ env.commitmsg }}
+
+    - name: set the head commit message as env
+      run: |
+         echo '::set-env name=commitmsg::${{ github.event.head_commit.message }}'
+      
+    - name: get commit message
+      run: |
+         echo Commit MSG = $commitmsg
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
