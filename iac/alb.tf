@@ -16,7 +16,7 @@ resource "aws_alb_target_group" "alb_target_group_nginx" {
     create_before_destroy = true
   }
   deregistration_delay = "60"
-  depends_on           = ["aws_alb.alb-icva"]
+  depends_on           = ["aws_alb.alb_nginx"]
 
   health_check {
     path                = "/elb-status"
