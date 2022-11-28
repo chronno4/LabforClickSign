@@ -67,9 +67,11 @@ jobs:
         VARNAME: nginx-app_image_version
         USER: ${{ secrets.USER_GIT }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+        PROJECT: ${{ github.repository }}
       run: |
-        git clone https://${USER}:${TOKEN}@github.com/chronno4/LabforClickSign.git
-        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
+        git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        git clone https://${USER}:${TOKEN}@github.com/"${USER}"/${PROJECT}.git
+        cd ${PROJECT}/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
         git config --global user.name "${USER}"
         git merge --no-edit --strategy-option=ours main
