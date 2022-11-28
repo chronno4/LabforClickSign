@@ -26,15 +26,7 @@ jobs:
         shell: bash
         working-directory: ${{ env.TF_WORKING_DIR }}
 
-    steps:
-    - name: Extract version from package.json
-      uses: sergeysova/jq-action@v2
-      id: version
-      with:
-       cmd: 'ls -las && jq .version package.json -r'
-    - name: Show my version
-      run: 'echo "version ${{ steps.version.outputs.value }}"'
-        
+    steps:      
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -55,6 +47,12 @@ jobs:
 
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.sha_short }}
+    
+    - name: Version file
+      run: |
+        export VERSION=$(cat VERSION)
+        echo $VERSION
+        echo "VERSION=$(at VERSION)" >> $VERSION
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
