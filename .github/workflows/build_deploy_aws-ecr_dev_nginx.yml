@@ -31,7 +31,7 @@ jobs:
       uses: sergeysova/jq-action@v2
       id: version
       with:
-       cmd: 'jq .version package.json -r'
+       cmd: 'ls -las && jq .version package.json -r'
     - name: Show my version
       run: 'echo "version ${{ steps.version.outputs.value }}"'
         
