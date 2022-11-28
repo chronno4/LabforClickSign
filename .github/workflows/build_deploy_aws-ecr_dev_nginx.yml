@@ -46,6 +46,10 @@ jobs:
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.sha_short }}
+    - name: Var Version
+      run: |
+        jq -r '.version' package.json > VERSION
+        export VERSION=$(cat VERSION)
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
@@ -63,6 +67,7 @@ jobs:
     - name: Deploy AWS ECS
       env:
         TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        VERSION: ${{ env.VERSION }}
         VARNAME: nginx-app_image_version
         USER: ${{ secrets.USER_GIT }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
@@ -70,9 +75,9 @@ jobs:
       run: |
         git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
         git clone -b main https://${USER}:${TOKEN}@github.com/chronno4/LabforClickSign.git
-        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
+        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${VERSION}-${IMAGE_TAG}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
         git config --global user.name "${USER}"
         git add variables.tf
-        git commit -m "Update ${VARNAME} ${IMAGE_TAG} version"
+        git commit -m "Update ${VARNAME} ${VERSION}-${IMAGE_TAG} version"
         git push
