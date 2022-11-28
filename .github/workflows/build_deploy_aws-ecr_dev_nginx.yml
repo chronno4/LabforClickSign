@@ -65,7 +65,7 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX_SNAPSHOT }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
-        VERSION: $(cat version)
+        VERSION: ${{ cat version }}
       run: |
         # Build a docker container and push it to ECR 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION-$IMAGE_TAG .
