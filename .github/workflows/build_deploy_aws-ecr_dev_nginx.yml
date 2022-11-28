@@ -20,21 +20,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: 'app/front-end/nginx-app/'
-      commitmsg: ${{ github.event.head_commit.message }}
 
     defaults:
       run:
         shell: bash
         working-directory: ${{ env.TF_WORKING_DIR }}
 
-    steps:      
+    steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: get commit message
-      run: |
-        echo Commit MSG = $commitmsg
-        
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -49,7 +44,6 @@ jobs:
     - name: Set outputs
       id: vars
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.sha_short }}
 
@@ -60,17 +54,16 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX_SNAPSHOT }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
-        VERSION: ${{ github.event.head_commit.message }}
       run: |
         # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION-$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION-$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION-$IMAGE_TAG"
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
     - name: Deploy AWS ECS
       env:
         TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        VERSION: ${{ github.event.head_commit.message }}
+        VERSION: ${{ github.sha }}
         VARNAME: nginx-app_image_version
         USER: ${{ secrets.USER_GIT }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
@@ -78,9 +71,9 @@ jobs:
       run: |
         git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
         git clone -b main https://${USER}:${TOKEN}@github.com/chronno4/LabforClickSign.git
-        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${VERSION}-${IMAGE_TAG}\"/}" variables.tf
+        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
         git config --global user.name "${USER}"
         git add variables.tf
-        git commit -m "Update ${VARNAME} ${VERSION}-${IMAGE_TAG} version"
+        git commit -m "Update ${VARNAME} ${IMAGE_TAG} version"
         git push
