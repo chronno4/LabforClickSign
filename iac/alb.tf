@@ -15,6 +15,17 @@ resource "aws_alb_target_group" "alb_target_group_nginx" {
   lifecycle {
     create_before_destroy = true
   }
+  deregistration_delay = "60"
+  depends_on           = ["aws_alb.alb-icva"]
+
+  health_check {
+    path                = "/elb-status"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 5
+    interval            = 10
+    matcher             = "200-399"
+  }
 }
 
 resource "aws_alb_listener" "alb_listener_nginx" {
