@@ -4,6 +4,8 @@ resource "aws_alb" "alb_nginx" {
   subnets            = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
   security_groups    = [aws_security_group.alb_nginx.id]
 
+  depends_on = [aws_internet_gateway.internet_gateway]
+
 }
 
 resource "aws_alb_target_group" "alb_target_group_nginx" {
@@ -44,6 +46,8 @@ resource "aws_alb" "alb_rails" {
   load_balancer_type = "application"
   subnets            = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
   security_groups    = [aws_security_group.alb_rails.id]
+
+  depends_on = [aws_internet_gateway.internet_gateway]
 
 }
 
