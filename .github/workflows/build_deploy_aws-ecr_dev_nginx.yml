@@ -71,7 +71,7 @@ jobs:
       run: |
         git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
         git clone -b main https://${USER}:${TOKEN}@github.com/chronno4/LabforClickSign.git
-        cd ${PROJECT}/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
+        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
         git config --global user.name "${USER}"
         git add variables.tf
