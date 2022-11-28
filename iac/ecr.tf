@@ -7,7 +7,7 @@
 #
 #########
 resource "aws_ecr_repository" "nginx-app" {
-  name                 = "nginx-app-${var.ecr_registry_type[var.Env]}"
+  name                 = "nginx-app${var.ecr_registry_type[var.Env]}"
   image_tag_mutability = "MUTABLE" # SNAPSHOT
   image_scanning_configuration {
     scan_on_push = false
@@ -78,7 +78,7 @@ EOF
 
 #########
 resource "aws_ecr_repository" "rails-app" {
-  name                 = "rails-app-${var.ecr_registry_type[var.Env]}"
+  name                 = "rails-app${var.ecr_registry_type[var.Env]}"
   image_tag_mutability = "MUTABLE" # SNAPSHOT
   image_scanning_configuration {
     scan_on_push = false
