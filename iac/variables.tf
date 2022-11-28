@@ -6,7 +6,7 @@ variable "nginx-app_image_version" {
 }
 
 variable "rails-app_image_version" {
-  default = "233232"
+  default = "742f001"
 }
 
 variable "project_name_nginx" {
