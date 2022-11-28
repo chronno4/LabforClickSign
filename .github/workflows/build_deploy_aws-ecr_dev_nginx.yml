@@ -50,6 +50,9 @@ jobs:
     
     - name: Version file
       run: |
+        ls -las
+        pwd
+        ls -las
         export VERSION=$(cat VERSION)
         echo $VERSION
         echo "VERSION=$(at VERSION)" >> $VERSION
