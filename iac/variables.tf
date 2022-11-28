@@ -2,7 +2,7 @@
 # variables
 #
 variable "nginx-app_image_version" {
-  default = "999993333333333333"
+  default = "6b65d6c"
 }
 
 variable "rails-app_image_version" {
