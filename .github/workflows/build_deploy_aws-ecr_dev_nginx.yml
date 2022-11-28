@@ -64,7 +64,7 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX_SNAPSHOT }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
-        VERSION: ${{ steps.version.outputs.value }}
+        VERSION: $(cat version)
       run: |
         # Build a docker container and push it to ECR 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION-$IMAGE_TAG .
@@ -74,7 +74,7 @@ jobs:
     - name: Deploy AWS ECS
       env:
         TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        VERSION: ${{ steps.version.outputs.value }}
+        VERSION: $(cat version)
         VARNAME: nginx-app_image_version
         USER: ${{ secrets.USER_GIT }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
