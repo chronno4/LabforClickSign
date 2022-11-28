@@ -27,6 +27,15 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
 
     steps:
+    - name: Var Version
+      uses: sergeysova/jq-action@v2
+      id: version
+      with:
+        cmd: 'jq .version package.json -r'
+
+    - name: Show my version
+      run: 'echo "version ${{ steps.version.outputs.value }}"'
+
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -48,15 +57,6 @@ jobs:
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.sha_short }}
 
-    - name: Var Version
-      uses: sergeysova/jq-action@v2
-      id: version
-      with:
-        cmd: 'jq .version package.json -r'
-
-    - name: Show my version
-      run: 'echo "version ${{ steps.version.outputs.value }}"'
-
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
       env:
@@ -69,7 +69,7 @@ jobs:
         # Build a docker container and push it to ECR 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${VERSION}-$IMAGE_TAG .
         echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${VERSION}-$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${VERSION}$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:${VERSION}-$IMAGE_TAG"
     - name: Deploy AWS ECS
       env:
