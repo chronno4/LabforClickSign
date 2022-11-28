@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: 'app/front-end/nginx-app/'
-      VERSION: '$(cat version)'
+      commitmsg: ${{ github.event.head_commit.message }}
 
     defaults:
       run:
@@ -30,8 +30,7 @@ jobs:
     steps:      
     - name: Checkout
       uses: actions/checkout@v2
-      env:
-        commitmsg: ${{ github.event.head_commit.message }}
+
     - name: get commit message
       run: |
         echo Commit MSG = $commitmsg
