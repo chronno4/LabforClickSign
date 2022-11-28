@@ -73,27 +73,19 @@ resource "aws_security_group" "alb_rails" {
 
   depends_on = [aws_security_group.alb_nginx]
   ingress {
-    protocol        = "tcp"
-    from_port       = 80
-    to_port         = 80
-    security_groups = [aws_security_group.alb_nginx.id]
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["10.0.1.0/24"]
   }
 
   ingress {
-    protocol  = "tcp"
-    from_port = 80
-    to_port   = 80
-    #security_groups = [aws_security_group.ecs_tasks_nginx.id]
-    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
-  # ingress {
-  #   protocol  = "tcp"
-  #   from_port = 3000
-  #   to_port   = 3000
-  #   #security_groups = [aws_security_group.alb_nginx.id]
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
 
   ingress {
     protocol  = "tcp"
@@ -121,11 +113,16 @@ resource "aws_security_group" "ecs_tasks_rails" {
   }
 
   ingress {
-    protocol  = "tcp"
-    from_port = 3000
-    to_port   = 3000
-    #security_groups = [aws_security_group.alb_rails.id]
-    cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "tcp"
+    from_port   = 3000
+    to_port     = 3000
+    cidr_blocks = ["10.0.0.0/24"]
+  }
+  ingress {
+    protocol    = "tcp"
+    from_port   = 3000
+    to_port     = 3000
+    cidr_blocks = ["10.0.1.0/24"]
   }
 
   egress {
