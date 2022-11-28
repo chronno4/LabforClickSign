@@ -32,6 +32,29 @@ variable "ecr_registry_type" {
   }
 }
 
+variable "cidr_block_vpc" {
+  type = map(string)
+  default = {
+    "dev" = "10.0.0.0/23"
+    "prd" = "10.1.0.0/23"
+  }
+}
+variable "cidr_block_1" {
+  type = map(string)
+  default = {
+    "dev" = "10.0.0.0/24"
+    "prd" = "10.1.0.0/24"
+  }
+}
+
+variable "cidr_block_2" {
+  type = map(string)
+  default = {
+    "dev" = "10.0.1.0/24"
+    "prd" = "10.1.1.0/24"
+  }
+}
+
 variable "aws_region" {
   type        = string
   description = "AWS region"

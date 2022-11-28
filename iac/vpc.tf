@@ -1,40 +1,40 @@
 resource "aws_vpc" "vpc" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.cidr_block_vpc[var.Env]
   enable_dns_hostnames = true
 
-  # tags = {
-  #   Name = vpc_lab
-  # }
+  tags = {
+    Name = "vpc_lab-${var.Env}"
+  }
 }
 
 resource "aws_subnet" "subnet_1" {
   vpc_id = aws_vpc.vpc.id
 
-  cidr_block        = "10.0.0.0/24"
+  cidr_block        = var.cidr_block_1[var.Env]
   availability_zone = "${var.region}a"
 
-  # tags = {
-  #   Name = subnet1
-  # }
+  tags = {
+    Name = "subnet1-${var.Env}"
+  }
 }
 
 resource "aws_subnet" "subnet_2" {
   vpc_id = aws_vpc.vpc.id
 
-  cidr_block        = "10.0.1.0/24"
+  cidr_block        = var.cidr_block_2[var.Env]
   availability_zone = "${var.region}b"
 
-  # tags = {
-  #   Name = subnet2
-  # }
+  tags = {
+    Name = "subnet2-${var.Env}"
+  }
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
 
-  # tags = {
-  #   Name = var.project_name
-  # }
+  tags = {
+    Name = "ig-lab-${var.Env}"
+  }
 }
 
 resource "aws_route_table" "route_table" {
@@ -45,9 +45,9 @@ resource "aws_route_table" "route_table" {
     gateway_id = aws_internet_gateway.internet_gateway.id
   }
 
-  # tags = {
-  #   Name = var.project_name
-  # }
+  tags = {
+    Name = "rt-lab-${var.Env}"
+  }
 }
 
 resource "aws_route_table_association" "route_table_association_1" {
