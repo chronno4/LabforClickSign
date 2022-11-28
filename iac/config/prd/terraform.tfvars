@@ -1,7 +1,7 @@
 
 
 environment   = "prd"
-Env   = "prd"
+Env           = "prd"
 instance_type = "t2.micro"
 
 #ecr_registry_type = "-snapshot"

@@ -20,7 +20,7 @@ variable "project_name_rails" {
 variable "Env" {
   type        = string
   description = "The environment to deploy to"
-  default = "dev"
+  default     = "dev"
 }
 
 
