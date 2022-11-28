@@ -53,9 +53,9 @@ jobs:
         ls -las
         pwd
         ls -las
-        export VERSION=$(cat VERSION)
+        export VERSION=$(cat version)
         echo $VERSION
-        echo "VERSION=$(at VERSION)" >> $VERSION
+        echo "VERSION=$(cat version)" >> $VERSION
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
