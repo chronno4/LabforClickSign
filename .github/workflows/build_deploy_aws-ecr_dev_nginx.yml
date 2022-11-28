@@ -60,7 +60,7 @@ jobs:
         echo "Pushing image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-    - name: Configure git
+    - name: Deploy AWS ECS
       env:
         TOKEN: ${{ secrets.ACCESS_TOKEN }}
         VARNAME: nginx-app_image_version

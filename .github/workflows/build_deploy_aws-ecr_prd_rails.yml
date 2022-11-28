@@ -3,21 +3,21 @@ on:
     tags:
       - v[12].[0-9]+.[0-9]+
     paths:
-      - 'app/front-end/**'
+      - 'app/back-end/**'
   workflow_dispatch:
     tags:
       - v[12].[0-9]+.[0-9]+
     paths:
-      - 'app/front-end/**'
+      - 'app/back-end/**'
 
-name: nginx-app-prd
+name: rails-app-prd
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     env:
-      TF_WORKING_DIR: 'app/front-end/nginx-app/'
+      TF_WORKING_DIR: 'app/back-end/rails-app/'
 
     defaults:
       run:
@@ -51,7 +51,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX_SNAPSHOT }}
+        ECR_REPOSITORY: ${{ secrets.REPO_NAME_RAILS_SNAPSHOT }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
         VERSION: ${{ env.RELEASE_VERSION }}
