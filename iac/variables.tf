@@ -1,6 +1,13 @@
 #
 # variables
 #
+variable "nginx-app_image_version" {
+  default = "e02385d"
+}
+
+variable "rails-app_image_version" {
+  default = "e02385d"
+}
 
 variable "project_name_nginx" {
   default = "nginx_app"
@@ -14,13 +21,6 @@ variable "Env" {
   default = "dev"
 }
 
-variable "nginx-app_image_version" {
-  default = "e02385d"
-}
-
-variable "rails-app_image_version" {
-  default = "e02385d"
-}
 
 variable "ecr_registry_type" {
   type = map(string)
