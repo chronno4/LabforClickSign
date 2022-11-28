@@ -72,6 +72,7 @@ jobs:
         cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${VERSION}-${IMAGE_TAG}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
         git config --global user.name "${USER}"
+        git merge --no-edit --strategy-option=ours main
         git add variables.tf
         git commit -m "Update ${VARNAME} ${IMAGE_TAG} version"
         git push
