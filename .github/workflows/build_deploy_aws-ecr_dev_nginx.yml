@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: 'app/front-end/nginx-app/'
+      VERSION: '$(cat version)'
 
     defaults:
       run:
