@@ -87,13 +87,13 @@ resource "aws_security_group" "alb_rails" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    protocol  = "tcp"
-    from_port = 3000
-    to_port   = 3000
-    #security_groups = [aws_security_group.alb_nginx.id]
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   protocol  = "tcp"
+  #   from_port = 3000
+  #   to_port   = 3000
+  #   #security_groups = [aws_security_group.alb_nginx.id]
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   ingress {
     protocol  = "tcp"
