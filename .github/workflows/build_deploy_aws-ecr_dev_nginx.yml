@@ -30,7 +30,12 @@ jobs:
     steps:      
     - name: Checkout
       uses: actions/checkout@v2
-
+      env:
+        commitmsg: ${{ github.event.head_commit.message }}
+    - name: get commit message
+      run: |
+        echo Commit MSG = $commitmsg
+        
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -48,17 +53,6 @@ jobs:
 
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.sha_short }}
-    
-    - name: Version file
-      run: |
-        ls -las
-        pwd
-        ls -las
-        export VERSION=$(cat version)
-        echo $VERSION
-        echo "VERSION=$(cat version)" >> $VERSION
-        echo "version=$(cat version)" >> $VERSION
-        echo ${{ steps.vars.version }}
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
@@ -67,7 +61,7 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX_SNAPSHOT }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
-        VERSION: ${{ steps.vars.version }}
+        VERSION: ${{ github.event.head_commit.message }}
       run: |
         # Build a docker container and push it to ECR 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION-$IMAGE_TAG .
@@ -77,7 +71,7 @@ jobs:
     - name: Deploy AWS ECS
       env:
         TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        VERSION: $(cat version)
+        VERSION: ${{ github.event.head_commit.message }}
         VARNAME: nginx-app_image_version
         USER: ${{ secrets.USER_GIT }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
