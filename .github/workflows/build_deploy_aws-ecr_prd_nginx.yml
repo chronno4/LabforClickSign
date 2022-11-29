@@ -77,7 +77,7 @@ jobs:
         REPO_URL: ${{ secrets.REPO_URL }}
       run: |
         git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-        git clone -b main https://${USER}:${TOKEN}@${REPO_URL}
+        git clone https://${USER}:${TOKEN}@${REPO_URL}
         git checkout -b Backup-${VERSION}
         cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${VERSION}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
@@ -85,6 +85,6 @@ jobs:
         git add variables.tf
         git commit -a -m "Update ${VARNAME} ${VERSION} version"
         git push --set-upstream origin Backup-${VERSION}
-        git tag Backup-${VERSION}
+        git tag iac-${VERSION}
         git push origin --tags
  
