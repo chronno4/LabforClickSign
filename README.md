@@ -43,3 +43,6 @@ Branch Main para develop e TAG com o prefixo "v" para aplicação e "iac-v" para
 ```bash
 8- Deploy em dev e prd realizado!!!
 ```
+
+## Comunicação entre os micro serviços
+Ambos os ms contém ALB, porém somente o front-end é aberto para a internet, o ALB de back-end está aberto somente para a rede interna. Front-end se conecta a porta 3000 do ALB de back-end.
