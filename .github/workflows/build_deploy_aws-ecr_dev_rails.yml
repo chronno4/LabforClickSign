@@ -68,9 +68,10 @@ jobs:
         USER: ${{ secrets.USER_GIT }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
         PROJECT: ${{ github.repository }}
+        REPO_URL: ${{ secrets.REPO_URL }}
       run: |
         git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-        git clone -b main https://${USER}:${TOKEN}@github.com/chronno4/LabforClickSign.git
+        git clone -b main https://${USER}:${TOKEN}@${REPO_URL}
         cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
         git config --global user.email "${EMAIL}"
         git config --global user.name "${USER}"

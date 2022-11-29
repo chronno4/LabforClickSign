@@ -11,7 +11,6 @@ on:
       - 'app/back-end/**'
 
 name: rails-app-prd
-
 jobs:
   deploy:
     name: Deploy
@@ -41,11 +40,16 @@ jobs:
 
     - name: Set outputs
       id: vars
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     - name: Check outputs
+      run: echo ${{ steps.vars.outputs.sha_short }}
+
+    - name: GitHub Tag Name
       run: |
-           echo $RELEASE_VERSION
-           echo ${{ env.RELEASE_VERSION }}
+        echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+        echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+
+
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
@@ -54,10 +58,29 @@ jobs:
         ECR_REPOSITORY: ${{ secrets.REPO_NAME_RAILS }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
-        VERSION: ${{ env.RELEASE_VERSION }}
+        VERSION: ${{  github.ref_name }}
       run: |
         # Build a docker container and push it to ECR 
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
         echo "Pushing image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION"
+
+    - name: Deploy AWS ECS
+      env:
+        TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        VERSION: ${{  github.ref_name }}
+        VARNAME: rails-app_image_version
+        USER: ${{ secrets.USER_GIT }}
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+        PROJECT: ${{ github.repository }}
+        REPO_URL: ${{ secrets.REPO_URL }}
+      run: |
+        git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        git clone https://${USER}:${TOKEN}@${REPO_URL}
+        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${VERSION}\"/}" variables.tf
+        git config --global user.email "${EMAIL}"
+        git config --global user.name "${USER}"
+        git tag iac-${VERSION}
+        git push origin iac-${VERSION}
+ 
