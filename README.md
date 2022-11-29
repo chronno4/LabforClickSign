@@ -46,3 +46,16 @@ Branch Main para develop e TAG com o prefixo "v" para aplicação e "iac-v" para
 
 ## Comunicação entre os micro serviços
 Ambos os ms contém ALB, porém somente o front-end é aberto para a internet, o ALB de back-end está aberto somente para a rede interna. Front-end se conecta a porta 3000 do ALB de back-end.
+
+## Variáveis utilizadas
+ACCESS_TOKEN=tokem github
+AWS_ACCESS_KEY_ID
+AWS_REGION
+AWS_SECRET_ACCESS_KEY
+EMAIL=meu e-mail
+REPO_NAME_NGINX
+REPO_NAME_NGINX_SNAPSHOT
+REPO_NAME_RAILS
+REPO_NAME_RAILS_SNAPSHOT
+REPO_URL=github.com/chronno4/LabforClickSign.git
+USER_GIT=chronno4
