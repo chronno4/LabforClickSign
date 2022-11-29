@@ -21,7 +21,7 @@ Branch Main para develop e TAG com o prefixo "v" para aplicação e "iac-v" para
 
 ```bash
 3- O deploy no ambiente é realizar atravez de uma alteração no arquivo variables.tf, o valor de versão é trocado por uma nova.
-''
+```
 
 ```bash
 4- Assim que o valor é alterado, inicia a pipeline para a subida da nova versão no ambiente.
