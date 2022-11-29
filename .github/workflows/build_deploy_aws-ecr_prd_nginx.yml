@@ -1,24 +1,24 @@
 on:
   push:
-    tags:
-      - v[12].[0-9]+.[0-9]+
+    branches:
+      - main
+      - master
     paths:
       - 'app/front-end/**'
   workflow_dispatch:
-    tags:
-      - v[12].[0-9]+.[0-9]+
+    branches:
+      - main
+      - master
     paths:
       - 'app/front-end/**'
 
 name: nginx-app-prd
-
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     env:
       TF_WORKING_DIR: 'app/front-end/nginx-app/'
-      commitmsg: ${{ github.event.head_commit.message }}
 
     defaults:
       run:
@@ -42,23 +42,45 @@ jobs:
 
     - name: Set outputs
       id: vars
-      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     - name: Check outputs
+      run: echo ${{ steps.vars.outputs.sha_short }}
+
+    - name: var commit
       run: |
-           echo $RELEASE_VERSION
-           echo ${{ env.RELEASE_VERSION }}
+        echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+        echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+
+
 
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX }}
+        ECR_REPOSITORY: ${{ secrets.REPO_NAME_NGINX_ }}
         #IMAGE_TAG: ${{ github.sha }}
         IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
-        VERSION: ${{ env.RELEASE_VERSION }}
+        VARNAME: ${{  github.ref_name }}
       run: |
         # Build a docker container and push it to ECR 
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:VARNAME-$IMAGE_TAG .
         echo "Pushing image to ECR..."
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$VERSION"
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:VARNAME-$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:VARNAME-$IMAGE_TAG"
+    - name: Deploy AWS ECS
+      env:
+        TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        VERSION: ${{ github.sha }}
+        VARNAME: nginx-app_image_version
+        USER: ${{ secrets.USER_GIT }}
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+        PROJECT: ${{ github.repository }}
+      run: |
+        git config --global url."https://${TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        git clone -b main https://${USER}:${TOKEN}@github.com/chronno4/LabforClickSign.git
+        cd LabforClickSign/iac/ && sed -i "/${VARNAME}/{n;s/\"[0-9].*/\"${IMAGE_TAG}\"/}" variables.tf
+        git config --global user.email "${EMAIL}"
+        git config --global user.name "${USER}"
+        git add variables.tf
+        git commit -m "Update ${VARNAME} ${IMAGE_TAG} version"
+        git push
