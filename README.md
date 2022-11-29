@@ -8,7 +8,8 @@ O projeto foi baseado na seguinte estrutura:
 
 Branch Main para develop e TAG com o prefixo "v" para aplicação e "iac-v" para iac em produção
 
- 
+[terraform](https://github.com/chronno4/LabforClickSign/blob/main/iac/README.md)
+
 ## Explicação
 
 ```bash
