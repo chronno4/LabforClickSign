@@ -29,18 +29,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: get commit message
-        run: |
-            echo Commit MSG = ${{ env.commitmsg }}
-
-    - name: set the head commit message as env
-      run: |
-         echo '::set-env name=commitmsg::${{ github.event.head_commit.message }}'
-      
-    - name: get commit message
-      run: |
-         echo Commit MSG = $commitmsg
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
