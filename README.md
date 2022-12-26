@@ -8,7 +8,7 @@ O projeto foi baseado na seguinte estrutura:
 
 Branch Main para develop e TAG com o prefixo "v" para aplicação e "iac-v" para iac em produção
 
-[terraform](https://github.com/chronno4/LabforClickSign/blob/main/iac/README.md)
+[terraform](https://github.com/chronno4/LabforPortfolio/blob/main/iac/README.md)
 
 ## Explicação
 
@@ -57,5 +57,7 @@ REPO_NAME_NGINX
 REPO_NAME_NGINX_SNAPSHOT
 REPO_NAME_RAILS
 REPO_NAME_RAILS_SNAPSHOT
-REPO_URL=github.com/chronno4/LabforClickSign.git
+REPO_URL=github.com/chronno4/LabforPortfolio.git
 USER_GIT=chronno4
+
+
